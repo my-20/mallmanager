@@ -24,8 +24,10 @@
 			}
 		},
 		methods: {
-			handleLogin() {
-				this.$http.post('login', this.formdata).then(res => {
+			//找到距离异步操作有结果的代码最近的方法 前面加async
+			async handleLogin() {
+				//找到异步操作有结果的代码前面加await同时接口异步操作的结果res
+				const res = await this.$http.post('login', this.formdata)
 					console.log(res)
 					const {
 						data,
@@ -43,7 +45,7 @@
 						//登录失败
 						this.$message.error(msg);
 					}
-				})
+				
 			}
 		}
 	}
