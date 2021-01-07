@@ -38,6 +38,8 @@
 					} = res.data
 					//登录成功
 					if(status === 200){
+						//登录成功保存token(方便后续页面验证用户有没有登录，防止用地址栏进行跳转)
+						localStorage.setItem('token',data.token)
 						//跳转home
 						 this.$router.push({name:'home'})
 						 this.$message.success(msg);
