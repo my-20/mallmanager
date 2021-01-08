@@ -18,7 +18,8 @@
 		</el-header>
 		<el-container>
 			<el-aside class='aside' width="200px">
-				<el-menu :unique-opened="true">
+				<!-- 开启路由模式 -->
+				<el-menu :unique-opened="true" :router="true">
 					<!-- 1 -->
 					<el-submenu index="1">
 						<template slot="title">
@@ -159,7 +160,7 @@
 	}
 
 	.aside {
-		background-color: #d3dce6;
+		background-color: #0000;
 	}
 
 	.main {
