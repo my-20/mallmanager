@@ -25,12 +25,12 @@
 							<span>用户管理</span>
 						</template>
 						<el-menu-item-group>
-							<!-- <template slot="title">分组一</template> -->
+							
 							<el-menu-item index="1-1">
 								<i class="el-icon-location"></i>
 								<span>用户列表</span>
 							</el-menu-item>
-							
+
 						</el-menu-item-group>
 					</el-submenu>
 					<!-- 2 -->
@@ -40,7 +40,7 @@
 							<span>权限管理</span>
 						</template>
 						<el-menu-item-group>
-							<!-- <template slot="title">分组一</template> -->
+							
 							<el-menu-item index="2-1">
 								<i class="el-icon-location"></i>
 								<span>角色列表</span>
@@ -58,7 +58,7 @@
 							<span>商品管理</span>
 						</template>
 						<el-menu-item-group>
-							<!-- <template slot="title">分组一</template> -->
+							
 							<el-menu-item index="3-1">
 								<i class="el-icon-location"></i>
 								<span>商品列表</span>
@@ -80,7 +80,7 @@
 							<span>订单管理</span>
 						</template>
 						<el-menu-item-group>
-							<!-- <template slot="title">分组一</template> -->
+							
 							<el-menu-item index="4-1">
 								<i class="el-icon-location"></i>
 								<span>订单列表</span>
@@ -98,7 +98,7 @@
 							<span>数据统计</span>
 						</template>
 						<el-menu-item-group>
-							<!-- <template slot="title">分组一</template> -->
+							
 							<el-menu-item index="5-1">
 								<i class="el-icon-location"></i>
 								<span>选项1</span>
@@ -117,6 +117,21 @@
 </template>
 
 <script>
+	export default {
+		//beforeCreate此时组件的选项对象还未创建，el 和 data 并未初始化，因此无法访问methods， data， computed等上的方法和数据。
+		//在这里获取token，判断是否登录，登录vue继续渲染，否则停止渲染，跳回登录页面
+		beforeCreate() {
+			//获取token
+			const token = localStorage.getItem('token')
+			if (!token) {
+				//token 没有->转跳登录页面
+				this.$router.push({
+					name: 'login'
+				})
+			}
+			//if token 有->继续渲染组件
+		}
+	}
 </script>
 
 <style>
