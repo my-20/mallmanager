@@ -11,7 +11,8 @@
 					<h3 class="biaoti">后台管理系统</h3>
 				</el-col>
 				<el-col :span="2">
-					<a href="#" class="loginout">退出</a>
+					<!-- @click.prevent 阻止事件的默认行为， -->
+					<a href="#" @click.prevent="handleSignout()" class="loginout">退出</a> <!-- 阻止a标签跳转，仅执行函数handleSignout -->
 				</el-col>
 			</el-row>
 		</el-header>
@@ -130,6 +131,16 @@
 				})
 			}
 			//if token 有->继续渲染组件
+		},
+		methods:{
+			handleSignout(){
+				//1.清除token
+				localStorage.clear()
+				//2.提示
+				this.$message.success('退出成功')
+				//3.跳转登录页面
+				this.$router.push({name:'login'})
+			}
 		}
 	}
 </script>
