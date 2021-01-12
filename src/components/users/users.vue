@@ -63,6 +63,13 @@
 			
 			
 			<el-table-column prop="" label="操作">
+				<template>
+					<el-row>
+					  <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+					  <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+					  <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+					</el-row>
+				</template>
 			</el-table-column>
 		</el-table>
 	</el-card>
