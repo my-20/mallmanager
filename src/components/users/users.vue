@@ -52,26 +52,32 @@
 				<!-- 由于el-table-column和template是不同的组件数据的作用域不同需要用在 template中需要用slot-scope来接收el-table-column的数据-->
 				<template slot-scope='scope'>
 					<!-- 用scope.row使用接收的数据 -->
-					<el-switch
-					  v-model="scope.row.mg_state"
-					  active-color="#13ce66"
-					  inactive-color="#ff4949">
-					  
+					<el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+
 					</el-switch>
 				</template>
 			</el-table-column>
-			
-			
+
+
 			<el-table-column prop="" label="操作">
 				<template>
 					<el-row>
-					  <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
-					  <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
-					  <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+						<el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
 					</el-row>
 				</template>
 			</el-table-column>
 		</el-table>
+		<!-- 分页 -->
+		<el-pagination @size-change="handleSizeChange" 
+		@current-change="handleCurrentChange" 
+		:current-page="currentPage4"
+		 :page-sizes="[2,4,6,8]" 
+		 :page-size="2" 
+		 layout="total, sizes, prev, pager, next, jumper" 
+		 :total="total">
+		</el-pagination>
 	</el-card>
 </template>
 
@@ -99,6 +105,13 @@
 			this.getUserList()
 		},
 		methods: {
+			//分页
+			handleSizeChange(val) {
+				console.log(`每页 ${val} 条`);
+			},
+			handleCurrentChange(val) {
+				console.log(`当前页: ${val}`);
+			},
 			async getUserList() {
 				//请求数据需要授权的API，必须在请求头中使用Authorization 字段提供 token令牌
 				const AUTH_TOKEN = localStorage.getItem('token')
