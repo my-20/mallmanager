@@ -72,7 +72,7 @@
 		<!-- 分页 -->
 		<el-pagination @size-change="handleSizeChange" 
 		@current-change="handleCurrentChange" 
-		:current-page="currentPage4"
+		:current-page="pagenum"
 		 :page-sizes="[2,4,6,8]" 
 		 :page-size="2" 
 		 layout="total, sizes, prev, pager, next, jumper" 
@@ -108,9 +108,14 @@
 			//分页
 			handleSizeChange(val) {
 				console.log(`每页 ${val} 条`);
+				this.pagesize=val;
+				this.pagenum=1;
+				this.getUserList();
 			},
 			handleCurrentChange(val) {
 				console.log(`当前页: ${val}`);
+				this.pagenum=val;
+				this.getUserList()
 			},
 			async getUserList() {
 				//请求数据需要授权的API，必须在请求头中使用Authorization 字段提供 token令牌
