@@ -65,7 +65,7 @@
 					<el-row>
 						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
 						<el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
-						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox()"></el-button>
 					</el-row>
 				</template>
 			</el-table-column>
@@ -135,6 +135,24 @@
 			this.getUserList()
 		},
 		methods: {
+			//删除用户
+			showDeleUserMsgBox() {
+				this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'error'
+				}).then(() => {
+					this.$message({
+						type: 'success',
+						message: '删除成功!'
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				});
+			},
 			//添加用户
 			showAddUserDia() {
 				this.dialogFormVisibleAdd = true;
@@ -159,9 +177,9 @@
 					this.getUserList();
 					//4.清空文本框
 					this.form = {};
-					
+
 				} else {
-					
+
 					this.$message.error(msg);
 				}
 			},
