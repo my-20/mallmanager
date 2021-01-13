@@ -61,11 +61,11 @@
 
 
 			<el-table-column prop="" label="操作">
-				<template>
+				<template slot-scope='scope'>
 					<el-row>
 						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
 						<el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
-						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox()"></el-button>
+						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox(scope.row.id)"></el-button>
 					</el-row>
 				</template>
 			</el-table-column>
@@ -136,16 +136,27 @@
 		},
 		methods: {
 			//删除用户
-			showDeleUserMsgBox() {
+			showDeleUserMsgBox(userId) {
 				this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'error'
-				}).then(() => {
-					this.$message({
-						type: 'success',
-						message: '删除成功!'
-					});
+				}).then(async () => {
+					//发送删除的请求 :id
+					//把userId以showDelUserMsgBox参数形式传进来
+					const res =await this.$http.delete('users/'+userId+'}');
+					//console.log(res);
+					if(res.data.meta.status===200){
+						//回到第一页
+						this.pagenum=1
+						//更新视图
+						this.getUserList()
+						//提示
+						this.$message({
+							type: 'success',
+							message: res.data.meta.msg
+						});
+					}
 				}).catch(() => {
 					this.$message({
 						type: 'info',
