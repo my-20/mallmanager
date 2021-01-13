@@ -14,7 +14,7 @@
 				<el-input placeholder="请输入内容" v-model="query" clearable  @clear="loadUserList()" class="inputSearch">
 					<el-button slot="append" icon="el-icon-search" @click="searchUsers()"></el-button>
 				</el-input>
-				<el-button type="primary">添加用户</el-button>
+				<el-button type="primary" @click="showAddUserDia()">添加用户</el-button>
 			</el-col>
 		</el-row>
 
@@ -79,7 +79,32 @@
 		 layout="total, sizes, prev, pager, next, jumper" 
 		 :total="total">
 		</el-pagination>
+		<!-- 弹出对话框 -->
+		<el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
+		  <el-form :model="form">
+		    <el-form-item label="用户名" :label-width="formLabelWidth">
+		      <el-input v-model="form.username" autocomplete="off"></el-input>
+		    </el-form-item>
+			
+		    <el-form-item label="密 码" :label-width="formLabelWidth">
+		      <el-input v-model="form.password" autocomplete="off"></el-input>
+		    </el-form-item>
+			
+			<el-form-item label="邮 箱" :label-width="formLabelWidth">
+			  <el-input v-model="form.email" autocomplete="off"></el-input>
+			</el-form-item>
+			
+			<el-form-item label="电 话" :label-width="formLabelWidth">
+		      <el-input v-model="form.mobile" autocomplete="off"></el-input>
+		    </el-form-item>
+		  </el-form>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+		    <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+		  </div>
+		</el-dialog>
 	</el-card>
+	
 </template>
 
 <script>
@@ -90,6 +115,15 @@
 				pagenum: 1,
 				pagesize: 2,
 				total: -1,
+				dialogFormVisibleAdd:false,
+				//添加用户表单数据
+				form:{
+					username:'',
+					password:'',
+					email:'',
+					mobile:''
+				},
+				formLabelWidth: '100px',
 				userlist: [{
 					id: 25,
 					username: "tige117",
@@ -106,6 +140,10 @@
 			this.getUserList()
 		},
 		methods: {
+			//添加用户
+			showAddUserDia(){
+				this.dialogFormVisibleAdd=true;
+			},
 			//清空搜索框 重新获取数据
 			loadUserList(){
 				this.getUserList()
