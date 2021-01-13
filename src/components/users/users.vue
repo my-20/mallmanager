@@ -11,7 +11,7 @@
 		<el-row class="searchRow">
 			<el-col>
 				<!-- clearable为清除键 -->
-				<el-input placeholder="请输入内容" v-model="query" clearable  @clear="loadUserList()" class="inputSearch">
+				<el-input placeholder="请输入内容" v-model="query" clearable @clear="loadUserList()" class="inputSearch">
 					<el-button slot="append" icon="el-icon-search" @click="searchUsers()"></el-button>
 				</el-input>
 				<el-button type="primary" @click="showAddUserDia()">添加用户</el-button>
@@ -71,40 +71,35 @@
 			</el-table-column>
 		</el-table>
 		<!-- 分页 -->
-		<el-pagination @size-change="handleSizeChange" 
-		@current-change="handleCurrentChange" 
-		:current-page="pagenum"
-		 :page-sizes="[2,4,6,8]" 
-		 :page-size="2" 
-		 layout="total, sizes, prev, pager, next, jumper" 
-		 :total="total">
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pagenum"
+		 :page-sizes="[2,4,6,8]" :page-size="2" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		</el-pagination>
 		<!-- 弹出对话框 -->
 		<el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
-		  <el-form :model="form">
-		    <el-form-item label="用户名" :label-width="formLabelWidth">
-		      <el-input v-model="form.username" autocomplete="off"></el-input>
-		    </el-form-item>
-			
-		    <el-form-item label="密 码" :label-width="formLabelWidth">
-		      <el-input v-model="form.password" autocomplete="off"></el-input>
-		    </el-form-item>
-			
-			<el-form-item label="邮 箱" :label-width="formLabelWidth">
-			  <el-input v-model="form.email" autocomplete="off"></el-input>
-			</el-form-item>
-			
-			<el-form-item label="电 话" :label-width="formLabelWidth">
-		      <el-input v-model="form.mobile" autocomplete="off"></el-input>
-		    </el-form-item>
-		  </el-form>
-		  <div slot="footer" class="dialog-footer">
-		    <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-		    <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
-		  </div>
+			<el-form :model="form">
+				<el-form-item label="用户名" :label-width="formLabelWidth">
+					<el-input v-model="form.username" autocomplete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="密 码" :label-width="formLabelWidth">
+					<el-input v-model="form.password" autocomplete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="邮 箱" :label-width="formLabelWidth">
+					<el-input v-model="form.email" autocomplete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="电 话" :label-width="formLabelWidth">
+					<el-input v-model="form.mobile" autocomplete="off"></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+				<el-button type="primary" @click="addUser()">确 定</el-button>
+			</div>
 		</el-dialog>
 	</el-card>
-	
+
 </template>
 
 <script>
@@ -115,13 +110,13 @@
 				pagenum: 1,
 				pagesize: 2,
 				total: -1,
-				dialogFormVisibleAdd:false,
+				dialogFormVisibleAdd: false,
 				//添加用户表单数据
-				form:{
-					username:'',
-					password:'',
-					email:'',
-					mobile:''
+				form: {
+					username: '',
+					password: '',
+					email: '',
+					mobile: ''
 				},
 				formLabelWidth: '100px',
 				userlist: [{
@@ -141,28 +136,54 @@
 		},
 		methods: {
 			//添加用户
-			showAddUserDia(){
-				this.dialogFormVisibleAdd=true;
+			showAddUserDia() {
+				this.dialogFormVisibleAdd = true;
+			},
+			//添加用户 -发起请求
+			async addUser() {
+				const res = await this.$http.post('users', this.form)
+				console.log(res);
+				//2.关闭对哈框
+				this.dialogFormVisibleAdd = false;
+				const {
+					meta: {
+						status,
+						msg
+					},
+					data
+				} = res.data;
+				if (status === 201) {
+					//1.提示成功
+					this.$message.success(msg);
+					//3.更新视图
+					this.getUserList();
+					//4.清空文本框
+					this.form = {};
+					
+				} else {
+					
+					this.$message.error(msg);
+				}
 			},
 			//清空搜索框 重新获取数据
-			loadUserList(){
+			loadUserList() {
 				this.getUserList()
 			},
 			//搜索用户
-			searchUsers(){
+			searchUsers() {
 				//因为搜索框绑定了query，这里调用getUserList就行
 				this.getUserList()
 			},
 			//分页
 			handleSizeChange(val) {
 				console.log(`每页 ${val} 条`);
-				this.pagesize=val;
-				this.pagenum=1;
+				this.pagesize = val;
+				this.pagenum = 1;
 				this.getUserList();
 			},
 			handleCurrentChange(val) {
 				console.log(`当前页: ${val}`);
-				this.pagenum=val;
+				this.pagenum = val;
 				this.getUserList()
 			},
 			async getUserList() {
@@ -170,7 +191,7 @@
 				const AUTH_TOKEN = localStorage.getItem('token')
 				this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
 				const res = await this.$http.get('users?query=' + this.query + '&pagenum=' + this.pagenum + '&pagesize=' + this.pagesize)
-				console.log(res)
+				//console.log(res)
 				const {
 					meta: {
 						status,
@@ -184,10 +205,10 @@
 				if (status === 200) {
 					this.userlist = JSON.parse(JSON.stringify(users))
 					this.total = total
-					this.$message.success(msg)
+					//this.$message.success(msg)
 
 				} else {
-					this.$message.warning(msg)
+					//this.$message.warning(msg)
 				}
 			}
 		}
