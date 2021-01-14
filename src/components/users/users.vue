@@ -64,8 +64,8 @@
 				<template slot-scope='scope'>
 					<el-row>
 						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click='showEditUserDia(scope.row)'></el-button>
-						<el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
 						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox(scope.row.id)"></el-button>
+						<el-button size="mini" plain type="success" icon="el-icon-check" circle @click='showSetUserRoleDia(scope.row)'></el-button>
 					</el-row>
 				</template>
 			</el-table-column>
@@ -101,14 +101,14 @@
 		<!-- 弹出编辑用户对话框 -->
 		<el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
 			<el-form :model="form">
-				<el-form-item  label="用户名" :label-width="formLabelWidth">
+				<el-form-item label="用户名" :label-width="formLabelWidth">
 					<el-input disabled v-model="form.username" autocomplete="off"></el-input>
 				</el-form-item>
-		
+
 				<el-form-item label="邮 箱" :label-width="formLabelWidth">
 					<el-input v-model="form.email" autocomplete="off"></el-input>
 				</el-form-item>
-		
+
 				<el-form-item label="电 话" :label-width="formLabelWidth">
 					<el-input v-model="form.mobile" autocomplete="off"></el-input>
 				</el-form-item>
@@ -118,6 +118,29 @@
 				<el-button type="primary" @click="editUser()">确 定</el-button>
 			</div>
 		</el-dialog>
+		<!-- 弹出编辑用户权限对话框 -->
+		<el-dialog title="分配角色" :visible.sync="dialogFormVisibleRol">
+			<el-form :model="form">
+				<el-form-item label="用户名" :label-width="formLabelWidth">
+					{{'当前的用户名'}}
+				</el-form-item>
+
+
+				<el-form-item label="角色权限" :label-width="formLabelWidth">
+					<!-- 如果seLect的绑定的数据的值和 option的value一样,就会显示该option的Label值 -->
+					<el-select v-model="currRoleId">
+						<el-option label="请选择" :value="-1"></el-option>
+					</el-select>
+				</el-form-item>
+
+
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="dialogFormVisibleRol = false">取 消</el-button>
+				<el-button type="primary" @click="dialogFormVisibleRol = false">确 定</el-button>
+			</div>
+		</el-dialog>
+
 	</el-card>
 
 </template>
@@ -130,9 +153,10 @@
 				pagenum: 1,
 				pagesize: 2,
 				total: -1,
+				currRoleId: -1,
 				dialogFormVisibleAdd: false,
-				dialogFormVisibleEdit:false,
-				
+				dialogFormVisibleEdit: false,
+				dialogFormVisibleRol: false,
 				//添加用户表单数据
 				form: {
 					username: '',
@@ -157,42 +181,46 @@
 			this.getUserList()
 		},
 		methods: {
+			//分配角色
+			showSetUserRoleDia(user) {
+				this.dialogFormVisibleRol = true;
+			},
 			//修改状态
-			async changeMgState(user){
+			async changeMgState(user) {
 				//发送请求
-				const res=await this.$http.put('users/'+user.id+'/state/'+user.mg_state)
+				const res = await this.$http.put('users/' + user.id + '/state/' + user.mg_state)
 				//console.log(res);
-				if(res.data.meta.status===200){
+				if (res.data.meta.status === 200) {
 					//提示
 					this.$message.success(res.data.meta.msg);
-				}else{
+				} else {
 					this.$message.error(res.data.meta.msg);
 				}
 			},
 			//编辑用户 --发送请求
-			async editUser(){
-				const res = await this.$http.put('users/'+this.form.id+'}', this.form);
+			async editUser() {
+				const res = await this.$http.put('users/' + this.form.id + '}', this.form);
 				//console.log(res);
 				//2.关闭对哈框
 				this.dialogFormVisibleEdit = false;
-				if(res.data.meta.status===200){
+				if (res.data.meta.status === 200) {
 					//更新视图
 					this.getUserList()
 					//提示
 					this.$message.success(res.data.meta.msg);
-				}else{
+				} else {
 					this.$message.error(res.data.meta.msg);
 				}
 			},
 			//编辑用户
-			showEditUserDia(user){
+			showEditUserDia(user) {
 				//获取用户数据赋值给编辑用户表单
 				//this.form.username=user.username;
 				//this.form.email=user.email;
 				//this.form.mobile=user.mobile;
-				this.form=user;
-				this.dialogFormVisibleEdit=true;
-				
+				this.form = user;
+				this.dialogFormVisibleEdit = true;
+
 			},
 			//删除用户
 			showDeleUserMsgBox(userId) {
@@ -203,11 +231,11 @@
 				}).then(async () => {
 					//发送删除的请求 :id
 					//把userId以showDelUserMsgBox参数形式传进来
-					const res =await this.$http.delete('users/'+userId+'}');
+					const res = await this.$http.delete('users/' + userId + '}');
 					//console.log(res);
-					if(res.data.meta.status===200){
+					if (res.data.meta.status === 200) {
 						//回到第一页
-						this.pagenum=1
+						this.pagenum = 1
 						//更新视图
 						this.getUserList()
 						//提示
@@ -226,7 +254,7 @@
 			//添加用户
 			showAddUserDia() {
 				//清空表单
-				this.form={};
+				this.form = {};
 				this.dialogFormVisibleAdd = true;
 			},
 			//添加用户 -发送请求
@@ -261,7 +289,7 @@
 			},
 			//搜索用户
 			searchUsers() {
-				
+
 				//因为搜索框绑定了query，这里调用getUserList就行
 				this.getUserList()
 			},
