@@ -63,7 +63,7 @@
 			<el-table-column prop="" label="操作">
 				<template slot-scope='scope'>
 					<el-row>
-						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click='showEditUserDia()'></el-button>
+						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click='showEditUserDia(scope.row)'></el-button>
 						<el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
 						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox(scope.row.id)"></el-button>
 					</el-row>
@@ -95,14 +95,14 @@
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-				<el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+				<el-button type="primary" @click="addUser()">确 定</el-button>
 			</div>
 		</el-dialog>
 		<!-- 弹出编辑用户对话框 -->
 		<el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
 			<el-form :model="form">
-				<el-form-item label="用户名" :label-width="formLabelWidth">
-					<el-input v-model="form.username" autocomplete="off"></el-input>
+				<el-form-item  label="用户名" :label-width="formLabelWidth">
+					<el-input disabled v-model="form.username" autocomplete="off"></el-input>
 				</el-form-item>
 		
 				<el-form-item label="邮 箱" :label-width="formLabelWidth">
@@ -157,9 +157,30 @@
 			this.getUserList()
 		},
 		methods: {
+			//编辑用户 --发送请求
+			async editUser(){
+				const res = await this.$http.put('users/'+this.form.id+'}', this.form);
+				console.log(res);
+				//2.关闭对哈框
+				this.dialogFormVisibleEdit = false;
+				if(res.data.meta.status===200){
+					//更新视图
+					this.getUserList()
+					//提示
+					this.$message.success(res.data.meta.msg);
+				}else{
+					this.$message.error(res.data.meta.msg);
+				}
+			},
 			//编辑用户
-			showEditUserDia(){
+			showEditUserDia(user){
+				//获取用户数据赋值给编辑用户表单
+				//this.form.username=user.username;
+				//this.form.email=user.email;
+				//this.form.mobile=user.mobile;
+				this.form=user;
 				this.dialogFormVisibleEdit=true;
+				
 			},
 			//删除用户
 			showDeleUserMsgBox(userId) {
@@ -194,10 +215,10 @@
 			showAddUserDia() {
 				this.dialogFormVisibleAdd = true;
 			},
-			//添加用户 -发起请求
+			//添加用户 -发送请求
 			async addUser() {
-				const res = await this.$http.post('users', this.form)
-				console.log(res);
+				const res = await this.$http.post('users', this.form);
+				//console.log(res);
 				//2.关闭对哈框
 				this.dialogFormVisibleAdd = false;
 				const {
