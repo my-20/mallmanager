@@ -53,7 +53,7 @@
 				<!-- 由于el-table-column和template是不同的组件数据的作用域不同需要用在 template中需要用slot-scope来接收el-table-column的数据-->
 				<template slot-scope='scope'>
 					<!-- 用scope.row使用接收的数据 -->
-					<el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+					<el-switch @change="changeMgState(scope.row)" v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
 
 					</el-switch>
 				</template>
@@ -157,10 +157,22 @@
 			this.getUserList()
 		},
 		methods: {
+			//修改状态
+			async changeMgState(user){
+				//发送请求
+				const res=await this.$http.put('users/'+user.id+'/state/'+user.mg_state)
+				//console.log(res);
+				if(res.data.meta.status===200){
+					//提示
+					this.$message.success(res.data.meta.msg);
+				}else{
+					this.$message.error(res.data.meta.msg);
+				}
+			},
 			//编辑用户 --发送请求
 			async editUser(){
 				const res = await this.$http.put('users/'+this.form.id+'}', this.form);
-				console.log(res);
+				//console.log(res);
 				//2.关闭对哈框
 				this.dialogFormVisibleEdit = false;
 				if(res.data.meta.status===200){
@@ -213,6 +225,8 @@
 			},
 			//添加用户
 			showAddUserDia() {
+				//清空表单
+				this.form={};
 				this.dialogFormVisibleAdd = true;
 			},
 			//添加用户 -发送请求
@@ -247,6 +261,7 @@
 			},
 			//搜索用户
 			searchUsers() {
+				
 				//因为搜索框绑定了query，这里调用getUserList就行
 				this.getUserList()
 			},
