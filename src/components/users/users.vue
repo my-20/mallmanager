@@ -63,7 +63,7 @@
 			<el-table-column prop="" label="操作">
 				<template slot-scope='scope'>
 					<el-row>
-						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click='showEditUserDia()'></el-button>
 						<el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
 						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox(scope.row.id)"></el-button>
 					</el-row>
@@ -74,7 +74,7 @@
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pagenum"
 		 :page-sizes="[2,4,6,8]" :page-size="2" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		</el-pagination>
-		<!-- 弹出对话框 -->
+		<!-- 弹出添加用户对话框 -->
 		<el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
 			<el-form :model="form">
 				<el-form-item label="用户名" :label-width="formLabelWidth">
@@ -95,7 +95,27 @@
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-				<el-button type="primary" @click="addUser()">确 定</el-button>
+				<el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+			</div>
+		</el-dialog>
+		<!-- 弹出编辑用户对话框 -->
+		<el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+			<el-form :model="form">
+				<el-form-item label="用户名" :label-width="formLabelWidth">
+					<el-input v-model="form.username" autocomplete="off"></el-input>
+				</el-form-item>
+		
+				<el-form-item label="邮 箱" :label-width="formLabelWidth">
+					<el-input v-model="form.email" autocomplete="off"></el-input>
+				</el-form-item>
+		
+				<el-form-item label="电 话" :label-width="formLabelWidth">
+					<el-input v-model="form.mobile" autocomplete="off"></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+				<el-button type="primary" @click="editUser()">确 定</el-button>
 			</div>
 		</el-dialog>
 	</el-card>
@@ -111,6 +131,8 @@
 				pagesize: 2,
 				total: -1,
 				dialogFormVisibleAdd: false,
+				dialogFormVisibleEdit:false,
+				
 				//添加用户表单数据
 				form: {
 					username: '',
@@ -135,6 +157,10 @@
 			this.getUserList()
 		},
 		methods: {
+			//编辑用户
+			showEditUserDia(){
+				this.dialogFormVisibleEdit=true;
+			},
 			//删除用户
 			showDeleUserMsgBox(userId) {
 				this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
