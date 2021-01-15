@@ -122,7 +122,7 @@
 		<el-dialog title="分配角色" :visible.sync="dialogFormVisibleRol">
 			<el-form :model="form">
 				<el-form-item label="用户名" :label-width="formLabelWidth">
-					{{'当前的用户名'}}
+					{{currUsername}}
 				</el-form-item>
 
 
@@ -130,6 +130,7 @@
 					<!-- 如果seLect的绑定的数据的值和 option的value一样,就会显示该option的Label值 -->
 					<el-select v-model="currRoleId">
 						<el-option label="请选择" :value="-1"></el-option>
+						<el-option :label="item.roleName" :value="item.id" v-for="(item,i) in roles" :key='i'></el-option>
 					</el-select>
 				</el-form-item>
 
@@ -137,7 +138,7 @@
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click="dialogFormVisibleRol = false">取 消</el-button>
-				<el-button type="primary" @click="dialogFormVisibleRol = false">确 定</el-button>
+				<el-button type="primary" @click="setRole()">确 定</el-button>
 			</div>
 		</el-dialog>
 
@@ -153,7 +154,10 @@
 				pagenum: 1,
 				pagesize: 2,
 				total: -1,
+				//分配角色
 				currRoleId: -1,
+				currUsername:'',
+				currUserId:-1,
 				dialogFormVisibleAdd: false,
 				dialogFormVisibleEdit: false,
 				dialogFormVisibleRol: false,
@@ -174,15 +178,33 @@
 					create_time: "2017-11-09T20:36:26.000Z",
 					mg_state: true, // 当前用户的状态
 					role_name: "炒鸡管理员"
-				}]
+				}],
+				roles:[]
 			}
 		},
 		created() {
 			this.getUserList()
 		},
 		methods: {
+			//分配角色->发送请求
+			async setRole(){
+				const res =await this.$http.put('users/'+this.currUserId+'/role',{rid:this.currRoleId});
+				this.dialogFormVisibleRol=false;
+				// console.log(res)
+			},
 			//分配角色
-			showSetUserRoleDia(user) {
+			async showSetUserRoleDia(user) {
+				this.currUsername=user.username;
+				this.currUserId=user.id;
+				//获取所有的角色权限
+				const res1 =await this.$http.get('roles');
+				this.roles=res1.data.data;
+				// console.log(res1)
+				
+				//获取用户自己的权限id->rid
+				const res =await this.$http.get('users/'+user.id);
+				//console.log(res)
+				this.currRoleId=res.data.data.rid;
 				this.dialogFormVisibleRol = true;
 			},
 			//修改状态
