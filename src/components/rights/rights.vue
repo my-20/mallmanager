@@ -12,8 +12,8 @@
 <script>
 	export default {
 		data() {
-			return{
-				rightlist:[]
+			return {
+				rightlist: []
 			}
 		},
 		created() {
@@ -21,11 +21,9 @@
 		},
 		methods: {
 			async getRightlise() {
-				const AUTH_TOKEN = localStorage.getItem('token')
-				this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
 				const res = await this.$http.get('rights/list');
 				console.log(res);
-this.rightlist = res.data.data
+				this.rightlist = res.data.data
 			}
 		}
 	}
