@@ -3,8 +3,16 @@
 		<!-- 面包屑 自定义全局组件-->
 		<my-bread level1='权限管理' level2='权限列表'></my-bread>
 		<!-- 表格 -->
-
-
+		<el-table :data="rightlist" border style="width: 100%">
+			<el-table-column type="index" label="#" width="180">
+			</el-table-column>
+			<el-table-column prop="authName" label="权限名称" width="180">
+			</el-table-column>
+			<el-table-column prop="path" label="路径">
+			</el-table-column>
+			<el-table-column prop="level" label="层级">
+			</el-table-column>
+		</el-table>
 
 	</el-card>
 </template>
