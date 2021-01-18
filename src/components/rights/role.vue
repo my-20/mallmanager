@@ -15,14 +15,17 @@
 					<el-row v-for="(item1,i) in scope.row.children" :key='i'>
 						<el-col :span="4">
 							<el-tag>{{item1.authName}}</el-tag>
+							<i class="el-icon-arrow-right"></i>
 						</el-col>
 						<el-col :span="20">
 							<el-row v-for="(item2,i) in item1.children" :key='i'>
 								<el-col :span="4">
-									<el-tag>{{item2.authName}}</el-tag>
+									<el-tag type="success">{{item2.authName}}</el-tag>
+									<i class="el-icon-arrow-right"></i>
 								</el-col>
 								<el-col :span="20">
-									<el-tag v-for="(item3,i) in item2.children" :key='i'>{{item3.authName}}</el-tag>
+									<el-tag v-for="(item3,i) in item2.children" :key='i' type="warning">{{item3.authName}}</el-tag>
+									
 								</el-col>
 							</el-row>
 						</el-col>
