@@ -10,6 +10,25 @@
 		</el-row>
 		<!-- 表格 -->
 		<el-table :data="rolelist" style="width: 100%">
+			<el-table-column type="expand" width="50">
+				<template slot-scope='scope'>
+					<el-row v-for="(item1,i) in scope.row.children" :key='i'>
+						<el-col :span="4">
+							<el-tag>{{item1.authName}}</el-tag>
+						</el-col>
+						<el-col :span="20">
+							<el-row>
+								<el-col :span="4">
+									
+									
+								</el-col>
+								<el-col :span="20"></el-col>
+							</el-row>
+						</el-col>
+					</el-row>
+				</template>
+			</el-table-column>
+
 
 			<el-table-column type="index" label="#" width="60">
 			</el-table-column>
