@@ -57,6 +57,16 @@
 				</template>
 			</el-table-column>
 		</el-table>
+		
+		<!-- 修改权限对话框 -->
+		<el-dialog title="修改权限" :visible.sync="dialogFormVisibleRight">
+		  <!-- 树形结构 -->
+		   
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="dialogFormVisibleRight = false">取 消</el-button>
+		    <el-button type="primary" @click="dialogFormVisibleRight = false">确 定</el-button>
+		  </div>
+		</el-dialog>
 	</el-card>
 
 </template>
@@ -65,6 +75,7 @@
 	export default {
 		data() {
 			return {
+				dialogFormVisibleRight:false,
 				rolelist: []
 			}
 		},
@@ -72,6 +83,10 @@
 			this.getRoletlist();
 		},
 		methods: {
+			//修改/分配 权限 -打开对话框
+			showSetUserRoleDia(row){
+				this.dialogFormVisibleRight=true;
+			},
 			//取消权限
 			//roles/: roleId/rights/:rightId
 			// roleId 当前角色的id
