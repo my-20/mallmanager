@@ -73,6 +73,7 @@
 		  -->
 		  <!-- defaultProps里的值应该去外层treelist中去找 -->
 		   <el-tree
+		   ref='tree'
 		     :data="treelist"
 		     show-checkbox
 		     node-key="id"
@@ -83,7 +84,7 @@
 		   
 		  <div slot="footer" class="dialog-footer">
 		    <el-button @click="dialogFormVisibleRight = false">取 消</el-button>
-		    <el-button type="primary" @click="dialogFormVisibleRight = false">确 定</el-button>
+		    <el-button type="primary" @click="setRoleRight()">确 定</el-button>
 		  </div>
 		</el-dialog>
 	</el-card>
@@ -104,15 +105,44 @@
 				defaultProps:{
 					label:'authName',
 					children:'children'
-				}
+				},
+				currRoleId:-1
 			}
 		},
 		created() {
 			this.getRoletlist();
 		},
 		methods: {
+			//修改权限 -发送请求
+			async setRoleRight(){
+				//rids树形节点中所有全选和半选的LabeL的id []
+				//获取全选的id的数组arr1 getCheckedKeys()
+				let arr1 =this.$refs.tree.getCheckedKeys();
+			
+				//获取半选的id的数据arr2 getHalfCheckedKeys()
+				let arr2=this.$refs.tree.getHalfCheckedKeys();
+				//合并数组
+				//arr1.concat(arr2);
+				//ES6合并，展开运算符...数组或者对象
+				let arr =[...arr1,...arr2];
+				//console.log(arr)
+				//发起修改请求
+				const res=await this.$http.post('roles/'+this.currRoleId+'/rights',{rids:arr.join(',')});
+				//刷新视图
+				this.getRoletlist();
+				//关闭弹窗
+				this.dialogFormVisibleRight=false;
+				//console.log(res);
+				if(res.data.meta.status===200){
+					this.$message.success(res.data.meta.msg);
+				}else{
+					this.$message.error(res.data.meta.msg);
+				}
+			},
 			//修改/分配 权限 -打开对话框
 			async showSetUserRoleDia(role){
+				//给currRoleId赋值
+				this.currRoleId=role.id;
 				//获取树形结构的权限数据
 				const res = await this.$http.get('rights/tree')
 				console.log(res)
