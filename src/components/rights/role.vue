@@ -17,10 +17,9 @@
 							<el-tag>{{item1.authName}}</el-tag>
 						</el-col>
 						<el-col :span="20">
-							<el-row>
+							<el-row v-for="(item2,i) in item1.children" :key='i'>
 								<el-col :span="4">
-									
-									
+									<el-tag>{{item2.authName}}</el-tag>
 								</el-col>
 								<el-col :span="20"></el-col>
 							</el-row>
