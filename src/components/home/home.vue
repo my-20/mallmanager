@@ -41,7 +41,7 @@
 						</template>
 						<el-menu-item-group>
 							
-							<el-menu-item index="2-1">
+							<el-menu-item index="/home/role">
 								<i class="el-icon-location"></i>
 								<span>角色列表</span>
 							</el-menu-item>
