@@ -15,19 +15,20 @@
 					<el-row v-for="(item1,i) in scope.row.children" :key='i'>
 						<!-- 一级权限 -->
 						<el-col :span="4">
-							<el-tag closable>{{item1.authName}}</el-tag>
+							<!-- 传角色id和权限id -->
+							<el-tag @close="deleteRight(scope.row.id,item1.id)" closable>{{item1.authName}}</el-tag>
 							<i class="el-icon-arrow-right"></i>
 						</el-col>
 						<el-col :span="20">
 							<el-row v-for="(item2,i) in item1.children" :key='i'>
 								<!-- 二级权限 -->
 								<el-col :span="4">
-									<el-tag type="success" closable>{{item2.authName}}</el-tag>
+									<el-tag @close="deleteRight(scope.row.id,item2.id)" type="success" closable>{{item2.authName}}</el-tag>
 									<i class="el-icon-arrow-right"></i>
 								</el-col>
 								<!-- 三级权限 -->
 								<el-col :span="20">
-									<el-tag closable v-for="(item3,i) in item2.children" :key='i' type="warning">{{item3.authName}}</el-tag>
+									<el-tag @close="deleteRight(scope.row.id,item3.id)" closable v-for="(item3,i) in item2.children" :key='i' type="warning">{{item3.authName}}</el-tag>
 								</el-col>
 							</el-row>
 						</el-col>
@@ -71,9 +72,23 @@
 			this.getRoletlist();
 		},
 		methods: {
+			//取消权限
+			//roles/: roleId/rights/:rightId
+			// roleId 当前角色的id
+			// rightId 要删除的权限id
+			async deleteRight(roleId,rightId){
+				const res = await this.$http.delete('roles/'+roleId+'/rights/'+rightId);
+				console.log(res);
+				if(res.data.meta.status===200){
+					this.$message.success(res.data.meta.msg);
+				}else{
+					this.$message.error(res.data.meta.msg);
+				}
+			},
+			//获取权限信息
 			async getRoletlist() {
 				const res = await this.$http.get('roles');
-				console.log(res);
+				//console.log(res);
 				this.rolelist = res.data.data
 			}
 		}
