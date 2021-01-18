@@ -77,6 +77,7 @@
 		     show-checkbox
 		     node-key="id"
 			 default-expand-all
+			 :default-checked-keys="arrcheck"
 		     :props="defaultProps">
 		   </el-tree>
 		   
@@ -98,6 +99,7 @@
 				//树形结构的数据
 				treelist:[],
 				arrexpend:[],
+				arrcheck:[],
 				//defaultProps里的值应该去外层treelist中去找
 				defaultProps:{
 					label:'authName',
@@ -116,18 +118,18 @@
 				console.log(res)
 				this.treelist=res.data.data;
 				this.dialogFormVisibleRight=true;
-				//展开全部树状图
-				// var arrtemp1=[];
-				// this.treelist.forEach(item1=>{
-				// 	arrtemp1.push(item1.id)
-				// 	item1.children.forEach(item2=>{
-				// 		arrtemp1.push(item2.id)
-				// 		item2.children.forEach(item3=>{
-				// 			arrtemp1.push(item3.id)
-				// 		})
-				// 	})
-				// });
-				// this.arrexpend=arrtemp1;
+				//获取当前角色role的权限id
+				var arrtemp1=[];
+				role.children.forEach(item1=>{
+					arrtemp1.push(item1.id)
+					item1.children.forEach(item2=>{
+						arrtemp1.push(item2.id)
+						item2.children.forEach(item3=>{
+							arrtemp1.push(item3.id)
+						})
+					})
+				});
+				this.arrcheck=arrtemp1;
 			},
 			//取消权限
 			//roles/: roleId/rights/:rightId
@@ -158,6 +160,5 @@
 <style>
 	.addrolebtn {
 		margin-top: 20px;
-
 	}
 </style>
