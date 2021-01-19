@@ -27,7 +27,7 @@
 							<i class="el-icon-location"></i>
 							<span>{{itme1.authName}}</span>
 						</template>
-
+						<!-- 这里的路由不能随便写，应该由返回的path决定 -->
 						<el-menu-item :index="itme2.path" v-for="(itme2,index) in itme1.children" :key='index'>
 							<i class="el-icon-location"></i>
 							<span>{{itme2.authName}}</span>
@@ -53,17 +53,17 @@
 		},
 		//beforeCreate此时组件的选项对象还未创建，el 和 data 并未初始化，因此无法访问methods， data， computed等上的方法和数据。
 		//在这里获取token，判断是否登录，登录vue继续渲染，否则停止渲染，跳回登录页面
-		beforeCreate() {
-			//获取token
-			const token = localStorage.getItem('token')
-			if (!token) {
-				//token 没有->转跳登录页面
-				this.$router.push({
-					name: 'login'
-				})
-			}
-			//if token 有->继续渲染组件
-		},
+		// beforeCreate() {
+		// 	//获取token
+		// 	const token = localStorage.getItem('token')
+		// 	if (!token) {
+		// 		//token 没有->转跳登录页面
+		// 		this.$router.push({
+		// 			name: 'login'
+		// 		})
+		// 	}
+		// 	//if token 有->继续渲染组件
+		// },
 		created() {
 			this.getMenus();
 		},

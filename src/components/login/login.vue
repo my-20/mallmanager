@@ -41,7 +41,7 @@
 			async handleLogin() {
 				//找到异步操作有结果的代码前面加await同时接口异步操作的结果res
 				const res = await this.$http.post('login', this.formdata)
-				console.log(res)
+				//console.log(res)
 				const {
 					data,
 					meta: {
