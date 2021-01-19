@@ -50,9 +50,8 @@
 			<el-table-column prop="" label="操作">
 				<template slot-scope='scope'>
 					<el-row>
-						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click='showEditUserDia(scope.row)'></el-button>
-						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox(scope.row.id)"></el-button>
-						<el-button size="mini" plain type="success" icon="el-icon-check" circle @click='showSetUserRoleDia(scope.row)'></el-button>
+						
+						<el-button size="mini" plain type="success" icon="el-icon-edit" circle @click='showSetUserRoleDia(scope.row)'></el-button>
 					</el-row>
 				</template>
 			</el-table-column>
