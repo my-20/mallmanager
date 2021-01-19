@@ -18,97 +18,23 @@
 		</el-header>
 		<el-container>
 			<el-aside class='aside' width="200px">
-				<!-- 开启路由模式 -->
-				<el-menu :router="true" :unique-opened="true" >
-					<!-- 1 -->
-					<el-submenu index="1">
+				<!-- :router="true"开启路由模式 -->
+				<el-menu :router="true" :unique-opened="true">
+
+					<el-submenu :index="''+itme1.order" v-for="(itme1,index) in menus" :key='index'>
+
 						<template slot="title">
 							<i class="el-icon-location"></i>
-							<span>用户管理</span>
+							<span>{{itme1.authName}}</span>
 						</template>
-						<el-menu-item-group>
-							<el-menu-item index="/home/users">
-								<i class="el-icon-location"></i>
-								<span>用户列表</span>
-							</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
-					<!-- 2 -->
-					<el-submenu index="2">
-						<template slot="title">
+
+						<el-menu-item :index="itme2.path" v-for="(itme2,index) in itme1.children" :key='index'>
 							<i class="el-icon-location"></i>
-							<span>权限管理</span>
-						</template>
-						<el-menu-item-group>
-							
-							<el-menu-item index="/home/role">
-								<i class="el-icon-location"></i>
-								<span>角色列表</span>
-							</el-menu-item>
-							<el-menu-item index="/home/rights">
-								<i class="el-icon-location"></i>
-								<span>权限列表</span>
-							</el-menu-item>
-						</el-menu-item-group>
+							<span>{{itme2.authName}}</span>
+						</el-menu-item>
+
 					</el-submenu>
-					<!-- 3 -->
-					<el-submenu index="3">
-						<template slot="title">
-							<i class="el-icon-location"></i>
-							<span>商品管理</span>
-						</template>
-						<el-menu-item-group>
-							
-							<el-menu-item index="3-1">
-								<i class="el-icon-location"></i>
-								<span>商品列表</span>
-							</el-menu-item>
-							<el-menu-item index="3-2">
-								<i class="el-icon-location"></i>
-								<span>分类参数</span>
-							</el-menu-item>
-							<el-menu-item index="3-3">
-								<i class="el-icon-location"></i>
-								<span>商品分类</span>
-							</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
-					<!-- 4 -->
-					<el-submenu index="4">
-						<template slot="title">
-							<i class="el-icon-location"></i>
-							<span>订单管理</span>
-						</template>
-						<el-menu-item-group>
-							
-							<el-menu-item index="4-1">
-								<i class="el-icon-location"></i>
-								<span>订单列表</span>
-							</el-menu-item>
-							<el-menu-item index="4-2">
-								<i class="el-icon-location"></i>
-								<span>选项2</span>
-							</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
-					<!-- 5 -->
-					<el-submenu index="5">
-						<template slot="title">
-							<i class="el-icon-location"></i>
-							<span>数据统计</span>
-						</template>
-						<el-menu-item-group>
-							
-							<el-menu-item index="5-1">
-								<i class="el-icon-location"></i>
-								<span>选项1</span>
-							</el-menu-item>
-							<el-menu-item index="5-2">
-								<i class="el-icon-location"></i>
-								<span>选项2</span>
-							</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
+
 				</el-menu>
 			</el-aside>
 			<el-main class='main'>
@@ -120,6 +46,11 @@
 
 <script>
 	export default {
+		data() {
+			return {
+				menus: []
+			}
+		},
 		//beforeCreate此时组件的选项对象还未创建，el 和 data 并未初始化，因此无法访问methods， data， computed等上的方法和数据。
 		//在这里获取token，判断是否登录，登录vue继续渲染，否则停止渲染，跳回登录页面
 		beforeCreate() {
@@ -133,14 +64,25 @@
 			}
 			//if token 有->继续渲染组件
 		},
-		methods:{
-			handleSignout(){
+		created() {
+			this.getMenus();
+		},
+		methods: {
+			//获取菜单列表
+			async getMenus() {
+				const res = await this.$http.get('menus');
+				//console.log(res);
+				this.menus = res.data.data;
+			},
+			handleSignout() {
 				//1.清除token
-				localStorage.clear()
+				localStorage.clear();
 				//2.提示
-				this.$message.success('退出成功')
+				this.$message.success('退出成功');
 				//3.跳转登录页面
-				this.$router.push({name:'login'})
+				this.$router.push({
+					name: 'login'
+				});
 			}
 		}
 	}

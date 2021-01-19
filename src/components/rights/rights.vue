@@ -38,7 +38,7 @@
 		methods: {
 			async getRightlise() {
 				const res = await this.$http.get('rights/list');
-				console.log(res);
+				//console.log(res);
 				this.rightlist = res.data.data
 			}
 		}
