@@ -5,6 +5,7 @@ import Home from '../components/home/home.vue'
 import Users from '../components/users/users.vue'
 import Rights from '../components/rights/rights.vue'
 import Role from '../components/rights/role.vue'
+import GoodsList from '../components/goods/goodslist.vue'
 import { Message } from 'element-ui';
 
 Vue.use(Router)
@@ -34,15 +35,20 @@ const router = new Router({
 				name: 'roles',
 				path: 'roles',
 				component: Role
+			},
+			{
+			
+				name: 'goods',
+				path: 'goods',
+				component: GoodsList
 			}]
 		}
 	]
 });
 
-
-// 在路由配置生效之前统一判断token
-// 路由守卫在路由配置生效之前
 // 路由/导航守卫
+// 在路由配置生效之前统一判断token
+// 路由配置生效之前会先进入路由守卫
 router.beforeEach((to,from,next)=>{
 	// console.log('到');
 	// console.log(to);

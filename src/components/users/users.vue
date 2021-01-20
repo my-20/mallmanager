@@ -169,16 +169,7 @@
 					mobile: ''
 				},
 				formLabelWidth: '100px',
-				userlist: [{
-					id: 25,
-					username: "tige117",
-					mobile: "18616358651",
-					type: 1,
-					email: "tige112@163.com",
-					create_time: "2017-11-09T20:36:26.000Z",
-					mg_state: true, // 当前用户的状态
-					role_name: "炒鸡管理员"
-				}],
+				userlist: [{}],
 				roles:[]
 			}
 		},
@@ -329,8 +320,8 @@
 			},
 			async getUserList() {
 				//请求数据需要授权的API，必须在请求头中使用Authorization 字段提供 token令牌
-				const AUTH_TOKEN = localStorage.getItem('token')
-				this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
+				// const AUTH_TOKEN = localStorage.getItem('token')
+				// this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
 				const res = await this.$http.get('users?query=' + this.query + '&pagenum=' + this.pagenum + '&pagesize=' + this.pagesize)
 				//console.log(res)
 				const {
