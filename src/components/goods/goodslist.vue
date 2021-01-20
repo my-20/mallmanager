@@ -1,6 +1,8 @@
 <template>
+	
 	<el-card class="box-card">
 		<!-- 面包屑 -->
+		
 		<el-breadcrumb separator-class="el-icon-arrow-right">
 			<el-breadcrumb-item>首页</el-breadcrumb-item>
 			<el-breadcrumb-item>用户管理</el-breadcrumb-item>
@@ -14,7 +16,7 @@
 				<el-input placeholder="请输入内容" v-model="query" clearable @clear="loadCommodityList()" class="inputSearch">
 					<el-button slot="append" icon="el-icon-search" @click="searchCommodity()"></el-button>
 				</el-input>
-				<el-button type="primary" @click="showAddUserDia()">添加商品</el-button>
+				<el-button type="primary" @click="$router.push({name:'goodsadd'})">添加商品</el-button>
 			</el-col>
 		</el-row>
 
@@ -46,7 +48,7 @@
 				<template slot-scope='scope'>
 					<el-row>
 						<el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click='showEditCompileDia(scope.row)'></el-button>
-						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox(scope.row.id)"></el-button>
+						<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleCompileMsgBox(scope.row.goods_id)"></el-button>
 
 					</el-row>
 				</template>
@@ -83,6 +85,7 @@
 				<el-button type="primary" @click="editCompile()">确 定</el-button>
 			</div>
 		</el-dialog>
+		
 	</el-card>
 </template>
 
@@ -108,10 +111,44 @@
 			this.commodityList();
 		},
 		methods: {
+			//删除商品->发送请求
+			showDeleCompileMsgBox(compileId){
+				this.$confirm('此操作将永久删除该数据, 是否继续?', '警告', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'error'
+				}).then(async () => {
+					//发送删除的请求 :id
+					const res = await this.$http.delete('goods/' + compileId + '}');
+					console.log(res);
+					if (res.data.meta.status === 200) {
+						//回到第一页
+						this.pagenum = 1
+						//更新视图
+						this.commodityList()
+						//提示
+						this.$message({
+							type: 'success',
+							message: res.data.meta.msg
+						});
+					}else{
+						//提示
+						this.$message({
+							type: 'error',
+							message: res.data.meta.msg
+						});
+					}
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				});
+			},
 			//编辑商品->发送请求
 			async editCompile() {
 				const res = await this.$http.put('goods/' + this.form.goods_id + '}', this.form);
-				console.log(res);
+				//console.log(res);
 				//关闭对哈框
 				this.commodityCompile = false;
 				if (res.data.meta.status === 200) {
@@ -151,7 +188,7 @@
 			},
 			async commodityList() {
 				const res = await this.$http.get('goods?query=' + this.query + '&pagenum=' + this.pagenum + '&pagesize=' + this.pagesize);
-				console.log(res);
+				//console.log(res);
 				this.commoditylist = JSON.parse(JSON.stringify(res.data.data.goods));
 				//console.log(this.commoditylist);
 				this.total = res.data.data.total;
