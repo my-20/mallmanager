@@ -1,14 +1,11 @@
 <template>
-	
+
 	<el-card class="box-card">
 		<!-- 面包屑 -->
-		
-		<el-breadcrumb separator-class="el-icon-arrow-right">
-			<el-breadcrumb-item>首页</el-breadcrumb-item>
-			<el-breadcrumb-item>用户管理</el-breadcrumb-item>
-			<el-breadcrumb-item>用户列表</el-breadcrumb-item>
-		</el-breadcrumb>
 
+		<!-- 面包屑 -->
+		<my-bread level1='商品管理' level2='商品列表'></my-bread>
+		</p>
 		<!-- 搜索框 -->
 		<el-row class="searchRow">
 			<el-col>
@@ -63,7 +60,7 @@
 		<el-dialog title="编辑商品" :visible.sync="commodityCompile">
 			<el-form :model="form">
 				<el-form-item label="商品名称" :label-width="formLabelWidth">
-					<el-input  v-model="form.goods_name" autocomplete="off"></el-input>
+					<el-input v-model="form.goods_name" autocomplete="off"></el-input>
 				</el-form-item>
 
 				<el-form-item label="商品价格(元)" :label-width="formLabelWidth">
@@ -73,7 +70,7 @@
 				<el-form-item label="商品数量" :label-width="formLabelWidth">
 					<el-input v-model="form.goods_number" autocomplete="off"></el-input>
 				</el-form-item>
-				
+
 				<el-form-item label="商品重量" :label-width="formLabelWidth">
 					<el-input v-model="form.goods_weight" autocomplete="off"></el-input>
 				</el-form-item>
@@ -85,7 +82,7 @@
 				<el-button type="primary" @click="editCompile()">确 定</el-button>
 			</div>
 		</el-dialog>
-		
+
 	</el-card>
 </template>
 
@@ -112,7 +109,7 @@
 		},
 		methods: {
 			//删除商品->发送请求
-			showDeleCompileMsgBox(compileId){
+			showDeleCompileMsgBox(compileId) {
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '警告', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -131,7 +128,7 @@
 							type: 'success',
 							message: res.data.meta.msg
 						});
-					}else{
+					} else {
 						//提示
 						this.$message({
 							type: 'error',
