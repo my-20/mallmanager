@@ -20,7 +20,7 @@
 		<!-- 外层需要表单来传数据发布发起请求 -->
 		<el-form label-position="top" label-width="80px" :model="form" style="height:300px;">
 			<el-scrollbar style="height:100%">
-				
+
 				<el-tabs @tab-click="tabChange()" v-model="active" tab-position="left">
 					<el-tab-pane name="1" label="基本信息">
 						<el-form-item label="商品名称">
@@ -39,13 +39,13 @@
 						<el-cascader clearable expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultProp"
 						 @change="handleChange"></el-cascader>
 					</el-tab-pane>
-					
-					
+
+
 					<el-tab-pane name="2" label="商品参数">
 						<!-- 显示的是该三级分类的商品参数 -->
 						<el-form-item :label="item1.attr_name" v-for="(item1,i) in arrDyparams" :key="i">
 							<!-- 复选框组 -->
-							<el-checkbox-group  v-model="item1.attr_vals">
+							<el-checkbox-group v-model="item1.attr_vals">
 								<el-checkbox border v-for="(item2,i) in item1.attr_vals" :key="i" :label="item2"></el-checkbox>
 							</el-checkbox-group>
 						</el-form-item>
@@ -57,7 +57,20 @@
 							<el-input v-model="item.attr_vals"></el-input>
 						</el-form-item>
 					</el-tab-pane>
-					<el-tab-pane name="4" label="商品图片"></el-tab-pane>
+
+					<el-tab-pane name="4" label="商品图片">
+						<el-form-item >
+							<el-upload 
+							 action="https://jsonplaceholder.typicode.com/posts/"
+							 :on-preview="handlePreview"
+							 :on-remove="handleRemove" 
+							 list-type="picture">
+								<el-button size="small" type="primary">点击上传</el-button>
+								<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+							</el-upload>
+					</el-tab-pane>
+					</el-form-item>
+
 					<el-tab-pane name="5" label="商品内容"></el-tab-pane>
 				</el-tabs>
 			</el-scrollbar>
@@ -93,7 +106,7 @@
 				//动态参数的数据数组
 				arrDyparams: [],
 				//静态参数的数据数组
-				arrStaticparams:[]
+				arrStaticparams: []
 
 			}
 		},
@@ -123,10 +136,10 @@
 						// item.attr_vaLs = item.attr_vals.trim( ).split( ',')
 						//}
 						//item.attr_vals里的值为字符串，需要转成对象在遍历，trim()去前后空格，split(',')转换成对象以“，”分割
-						item.attr_vals =item.attr_vals.length === 0 ?[] : item.attr_vals.trim().split(',')
+						item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.trim().split(',')
 					});
 
-				}else if(this.active === '3'){
+				} else if (this.active === '3') {
 					if (this.selectedOptions.length !== 3) {
 						//提示
 						this.$message.error('请先选择商品的三级分类');
@@ -136,7 +149,7 @@
 					//id->分类 sel=only表示的是获取动态参数的数据
 					const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=only');
 					//console.log(res);
-					this.arrStaticparams=res.data.data;
+					this.arrStaticparams = res.data.data;
 					console.log(this.arrStaticparams);
 				}
 			},
