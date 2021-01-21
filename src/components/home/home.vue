@@ -98,7 +98,7 @@
 	}
 
 	.header {
-		background-color: #E32B33;
+		background-color: #303133;
 	}
 
 	.aside {

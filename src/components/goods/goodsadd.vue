@@ -20,7 +20,7 @@
 		<!-- 外层需要表单来传数据发布发起请求 -->
 		<el-form label-position="top" label-width="80px" :model="form" style="height:300px;">
 			<el-scrollbar style="height:100%">
-				<el-tabs v-model="active" tab-position="left">
+				<el-tabs @tab-click="tabChange()" v-model="active" tab-position="left">
 					<el-tab-pane name="1" label="基本信息">
 						<el-form-item label="商品名称">
 							<el-input v-model="form.goods_name"></el-input>
@@ -35,7 +35,8 @@
 							<el-input v-model="form.goods_number"></el-input>
 						</el-form-item>
 						<!-- 级联选择器 -->
-						<el-cascader expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultProp" @change="handleChange"></el-cascader>
+						<el-cascader clearable expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultProp"
+						 @change="handleChange"></el-cascader>
 
 					</el-tab-pane>
 					<el-tab-pane name="2" label="商品参数"></el-tab-pane>
@@ -66,14 +67,15 @@
 				// 级联选择器绑定的数据
 				options: [],
 				//级联选择器默认展示
-				selectedOptions: [1,3,6],
+				selectedOptions: [1, 3, 6],
 				//defaultProp把数据转换成options中需要的值
 				defaultProp: {
 					label: 'cat_name',
 					value: 'cat_id',
 					children: 'children'
-				}
-
+				},
+				//动态参数的数据数组
+				arrDyparams: []
 
 			}
 		},
@@ -81,6 +83,23 @@
 			this.getGoodCate()
 		},
 		methods: {
+			//点击不同的tab时
+			async tabChange() {
+				//如果点击的是第二个tab 同时 三级分类要有值
+				if (this.active === '2') {
+					if (this.selectedOptions.length !== 3) {
+						//提示
+						this.$message.error('请先选择商品的三级分类');
+						return;
+					}
+					//获取数据
+					//id->分类
+					const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=many');
+					//console.log(res);
+					this.arrDyparams=res.data.data;
+					console.log(this.arrDyparams)
+				}
+			},
 			// 级联选择器@change触发的方法
 			handleChange() {
 
@@ -89,7 +108,7 @@
 			async getGoodCate() {
 				const res = await this.$http.get(`categories?type=3`);
 				//console.log(res);
-				this.options=res.data.data;
+				this.options = res.data.data;
 				//console.log(this.options);
 			}
 		}
