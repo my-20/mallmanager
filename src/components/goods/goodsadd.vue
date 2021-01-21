@@ -87,7 +87,8 @@
 				},
 				//动态参数的数据数组
 				arrDyparams: [],
-				checkList: []
+				//静态参数的数据数组
+				arrStaticparams:[]
 
 			}
 		},
@@ -109,7 +110,7 @@
 					const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=many');
 					//console.log(res);
 					this.arrDyparams = res.data.data;
-					console.log(this.arrDyparams);
+					//console.log(this.arrDyparams);
 					//this.arrDyparams每个对象.attr_vals字符串->数组->v-for
 					this.arrDyparams.forEach(item => {
 						//并不是所有的三级分类都有动态参数->""->[]->v-for报错
@@ -120,6 +121,18 @@
 						item.attr_vals =item.attr_vals.length === 0 ?[] : item.attr_vals.trim().split(',')
 					});
 
+				}else if(this.active === '3'){
+					if (this.selectedOptions.length !== 3) {
+						//提示
+						this.$message.error('请先选择商品的三级分类');
+						return;
+					}
+					//获取数据
+					//id->分类 sel=only表示的是获取动态参数的数据
+					const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=only');
+					//console.log(res);
+					this.arrStaticparams=res.data.data;
+					console.log(this.arrStaticparams);
 				}
 			},
 			// 级联选择器@change触发的方法
