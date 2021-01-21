@@ -35,7 +35,7 @@
 							<el-input v-model="form.goods_number"></el-input>
 						</el-form-item>
 						<!-- 级联选择器 -->
-						<el-cascader expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultPropt" @change="handleChange"></el-cascader>
+						<el-cascader expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultProp" @change="handleChange"></el-cascader>
 
 					</el-tab-pane>
 					<el-tab-pane name="2" label="商品参数"></el-tab-pane>
@@ -65,20 +65,32 @@
 				},
 				// 级联选择器绑定的数据
 				options: [],
-				selectedoptions: [],
+				//级联选择器默认展示
+				selectedOptions: [1,3,6],
+				//defaultProp把数据转换成options中需要的值
 				defaultProp: {
-					label: '',
-					value: '',
-					children: ''
+					label: 'cat_name',
+					value: 'cat_id',
+					children: 'children'
 				}
 
 
 			}
 		},
+		created() {
+			this.getGoodCate()
+		},
 		methods: {
 			// 级联选择器@change触发的方法
 			handleChange() {
 
+			},
+			//获取三级分类的信息
+			async getGoodCate() {
+				const res = await this.$http.get(`categories?type=3`);
+				//console.log(res);
+				this.options=res.data.data;
+				//console.log(this.options);
 			}
 		}
 	}
