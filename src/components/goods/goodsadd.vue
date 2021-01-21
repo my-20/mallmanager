@@ -43,8 +43,8 @@
 						<!-- 显示的是该三级分类的商品参数 -->
 						<el-form-item :label="item1.attr_name" v-for="(item1,i) in arrDyparams" :key="i">
 							<!-- 复选框组 -->
-							<el-checkbox-group v-model="checkList">
-								<el-checkbox v-for="(item2,i) in item1.attr_vals" :key="i" :label="item2"></el-checkbox>
+							<el-checkbox-group  v-model="item1.attr_vals">
+								<el-checkbox border v-for="(item2,i) in item1.attr_vals" :key="i" :label="item2"></el-checkbox>
 							</el-checkbox-group>
 						</el-form-item>
 
@@ -116,6 +116,7 @@
 						// if (item.attr_vals.Length !==O) {
 						// item.attr_vaLs = item.attr_vals.trim( ).split( ',')
 						//}
+						//item.attr_vals里的值为字符串，需要转成对象在遍历，trim()去前后空格，split(',')转换成对象以“，”分割
 						item.attr_vals =item.attr_vals.length === 0 ?[] : item.attr_vals.trim().split(',')
 					});
 
