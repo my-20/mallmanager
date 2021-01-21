@@ -59,17 +59,20 @@
 					</el-tab-pane>
 
 					<el-tab-pane name="4" label="商品图片">
-						<el-form-item >
-							<el-upload 
-							 action="https://jsonplaceholder.typicode.com/posts/"
-							 :on-preview="handlePreview"
-							 :on-remove="handleRemove" 
-							 list-type="picture">
-								<el-button size="small" type="primary">点击上传</el-button>
-								<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+						<el-form-item>
+							<el-upload
+							  action="http://127.0.0.1:8888/api/private/v1/upload"
+							  :headers='headers'
+							  :on-preview="handlePreview"
+							  :on-remove="handleRemove"
+							  :on-success="handleSuccess"
+							  list-type="picture">
+							  <el-button size="small" type="primary">点击上传</el-button>
+							  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
 							</el-upload>
+						</el-form-item>
 					</el-tab-pane>
-					</el-form-item>
+
 
 					<el-tab-pane name="5" label="商品内容"></el-tab-pane>
 				</el-tabs>
@@ -106,14 +109,25 @@
 				//动态参数的数据数组
 				arrDyparams: [],
 				//静态参数的数据数组
-				arrStaticparams: []
-
+				arrStaticparams: [],
+				headers: {
+					Authorization: localStorage.getItem('token')
+				}
 			}
 		},
 		created() {
 			this.getGoodCate()
 		},
 		methods: {
+			handleSuccess(file) {
+				console.log(file);
+			},
+			handleRemove(file) {
+
+			},
+			handlePreview(file) {
+
+			},
 			//点击不同的tab时
 			async tabChange() {
 				//如果点击的是第二个tab 同时 三级分类要有值
@@ -150,7 +164,7 @@
 					const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=only');
 					//console.log(res);
 					this.arrStaticparams = res.data.data;
-					console.log(this.arrStaticparams);
+					//console.log(this.arrStaticparams);
 				}
 			},
 			// 级联选择器@change触发的方法
