@@ -60,21 +60,23 @@
 
 					<el-tab-pane name="4" label="商品图片">
 						<el-form-item>
-							<el-upload
-							  action="http://127.0.0.1:8888/api/private/v1/upload"
-							  :headers='headers'
-							  :on-preview="handlePreview"
-							  :on-remove="handleRemove"
-							  :on-success="handleSuccess"
-							  list-type="picture">
-							  <el-button size="small" type="primary">点击上传</el-button>
-							  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+							<el-upload action="http://127.0.0.1:8888/api/private/v1/upload" :headers='headers' :on-preview="handlePreview"
+							 :on-remove="handleRemove" :on-success="handleSuccess" list-type="picture">
+								<el-button size="small" type="primary">点击上传</el-button>
+								<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
 							</el-upload>
 						</el-form-item>
 					</el-tab-pane>
 
 
-					<el-tab-pane name="5" label="商品内容"></el-tab-pane>
+					<el-tab-pane name="5" label="商品内容">
+						<el-form-item>
+							<!-- 表单元素 -->
+							<el-button type="primary">添加商品</el-button>
+							<!-- 富文本 -->
+							<quill-editor></quill-editor>
+						</el-form-item>
+					</el-tab-pane>
 				</el-tabs>
 			</el-scrollbar>
 		</el-form>
@@ -82,7 +84,17 @@
 </template>
 
 <script>
+	import 'quill/dist/quill.core.css'
+	import 'quill/dist/quill.snow.css'
+	import 'quill/dist/quill.bubble.css'
+	import {
+		quillEditor
+	} from 'vue-quill-editor'
+
 	export default {
+		components: {
+			quillEditor
+		},
 		data() {
 			return {
 				active: "1",
@@ -119,7 +131,11 @@
 			this.getGoodCate()
 		},
 		methods: {
+			//图片上传时的相关方法
+			//file形参里面是当前操作的图片的相关信息(图片名/图片路径)
 			handleSuccess(file) {
+				//file.response.data.tmp_path图片临时上传的路径
+				console.log("成功");
 				console.log(file);
 			},
 			handleRemove(file) {
