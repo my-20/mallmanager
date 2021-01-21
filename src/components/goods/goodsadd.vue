@@ -39,7 +39,18 @@
 						 @change="handleChange"></el-cascader>
 
 					</el-tab-pane>
-					<el-tab-pane name="2" label="商品参数"></el-tab-pane>
+					<el-tab-pane name="2" label="商品参数">
+						<!-- 显示的是该三级分类的商品参数 -->
+						<el-form-item :label="item1.attr_name" v-for="(item1,i) in arrDyparams" :key="i">
+							<!-- 复选框组 -->
+							<el-checkbox-group v-model="checkList">
+								<el-checkbox v-for="(item2,i) in item1.attr_vals" :key="i" :label="item2"></el-checkbox>
+							</el-checkbox-group>
+						</el-form-item>
+
+					</el-tab-pane>
+
+
 					<el-tab-pane name="3" label="商品属性"></el-tab-pane>
 					<el-tab-pane name="4" label="商品图片"></el-tab-pane>
 					<el-tab-pane name="5" label="商品内容"></el-tab-pane>
@@ -75,7 +86,8 @@
 					children: 'children'
 				},
 				//动态参数的数据数组
-				arrDyparams: []
+				arrDyparams: [],
+				checkList: []
 
 			}
 		},
@@ -93,11 +105,20 @@
 						return;
 					}
 					//获取数据
-					//id->分类
+					//id->分类 sel=many表示的是获取动态参数的数据
 					const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=many');
 					//console.log(res);
-					this.arrDyparams=res.data.data;
-					console.log(this.arrDyparams)
+					this.arrDyparams = res.data.data;
+					console.log(this.arrDyparams);
+					//this.arrDyparams每个对象.attr_vals字符串->数组->v-for
+					this.arrDyparams.forEach(item => {
+						//并不是所有的三级分类都有动态参数->""->[]->v-for报错
+						// if (item.attr_vals.Length !==O) {
+						// item.attr_vaLs = item.attr_vals.trim( ).split( ',')
+						//}
+						item.attr_vals =item.attr_vals.length === 0 ?[] : item.attr_vals.trim().split(',')
+					});
+
 				}
 			},
 			// 级联选择器@change触发的方法
