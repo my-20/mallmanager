@@ -17,29 +17,32 @@
 			<el-step title="商品图片"></el-step>
 			<el-step title="商品内容"></el-step>
 		</el-steps>
-
+		<!-- 外层需要表单来传数据发布发起请求 -->
 		<el-form label-position="top" label-width="80px" :model="form" style="height:300px;">
 			<el-scrollbar style="height:100%">
-			<el-tabs v-model="active" tab-position="left" >
-				<el-tab-pane name="1" label="基本信息">
-					<el-form-item label="商品名称">
-						<el-input v-model="form.goods_name"></el-input>
-					</el-form-item>
-					<el-form-item label="商品价格">
-						<el-input v-model="form.goods_price"></el-input>
-					</el-form-item>
-					<el-form-item label="商品重量">
-						<el-input v-model="form.goods_weight"></el-input>
-					</el-form-item>
-					<el-form-item label="商品数量">
-						<el-input v-model="form.goods_number"></el-input>
-					</el-form-item>
-				</el-tab-pane>
-				<el-tab-pane name="2" label="商品参数"></el-tab-pane>
-				<el-tab-pane name="3" label="商品属性"></el-tab-pane>
-				<el-tab-pane name="4" label="商品图片"></el-tab-pane>
-				<el-tab-pane name="5" label="商品内容"></el-tab-pane>
-			</el-tabs>
+				<el-tabs v-model="active" tab-position="left">
+					<el-tab-pane name="1" label="基本信息">
+						<el-form-item label="商品名称">
+							<el-input v-model="form.goods_name"></el-input>
+						</el-form-item>
+						<el-form-item label="商品价格">
+							<el-input v-model="form.goods_price"></el-input>
+						</el-form-item>
+						<el-form-item label="商品重量">
+							<el-input v-model="form.goods_weight"></el-input>
+						</el-form-item>
+						<el-form-item label="商品数量">
+							<el-input v-model="form.goods_number"></el-input>
+						</el-form-item>
+						<!-- 级联选择器 -->
+						<el-cascader expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultPropt" @change="handleChange"></el-cascader>
+
+					</el-tab-pane>
+					<el-tab-pane name="2" label="商品参数"></el-tab-pane>
+					<el-tab-pane name="3" label="商品属性"></el-tab-pane>
+					<el-tab-pane name="4" label="商品图片"></el-tab-pane>
+					<el-tab-pane name="5" label="商品内容"></el-tab-pane>
+				</el-tabs>
 			</el-scrollbar>
 		</el-form>
 	</el-card>
@@ -51,15 +54,30 @@
 			return {
 				active: "1",
 				form: {
-					gods_name:'',
-					goods_cat:'',
-					goods_price:'',
-					goods_numDer:'',
+					gods_name: '',
+					goods_cat: '',
+					goods_price: '',
+					goods_numDer: '',
 					goods_weight: '',
 					goods_introduce: '',
-					pics:'',
-					attrs:''
+					pics: '',
+					attrs: ''
+				},
+				// 级联选择器绑定的数据
+				options: [],
+				selectedoptions: [],
+				defaultProp: {
+					label: '',
+					value: '',
+					children: ''
 				}
+
+
+			}
+		},
+		methods: {
+			// 级联选择器@change触发的方法
+			handleChange() {
 
 			}
 		}
