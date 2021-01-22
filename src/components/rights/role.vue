@@ -1,7 +1,7 @@
 <template>
 	<el-card>
 		<!-- 面包屑 自定义全局组件-->
-		<my-bread level1='权限管理' level2='权限列表'></my-bread>
+		<my-bread level1='权限管理' level2='角色列表'></my-bread>
 
 		<el-row class="addrolebtn">
 			<el-col>

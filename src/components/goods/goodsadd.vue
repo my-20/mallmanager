@@ -7,7 +7,7 @@
 		</p>
 
 		<!-- 提示 el-alert -->
-		<el-alert title="添加商品信息" type="success" center="" show-icon></el-alert>
+		<el-alert title="添加商品信息" type="success" center=""  :closable="false"></el-alert>
 
 		<!-- 步骤条 el-steps-->
 		<el-steps :active="1*active" finish-status="success" simple style="margin-top: 20px">
@@ -117,7 +117,7 @@
 				// 级联选择器绑定的数据
 				options: [],
 				//级联选择器默认展示
-				selectedOptions: [1, 3, 6],
+				selectedOptions: [],
 				//defaultProp把数据转换成options中需要的值
 				defaultProp: {
 					label: 'cat_name',
@@ -144,7 +144,17 @@
 				this.form.goods_cat= this.selectedOptions.join(",");
 				
 				const res = await this.$http.post("goods", this.form);
-				
+				//console.log(res);
+				if (res.data.meta.status === 201) {
+					//跳转路径
+					this.$router.push({
+						name: 'goods'
+					})
+					//提示
+					this.$message.success(res.data.meta.msg);
+				} else {
+					this.$message.error(res.data.meta.msg);
+				}
 			},
 			//图片上传时的相关方法
 			//file形参里面是当前操作的图片的相关信息(图片名/图片路径)
@@ -158,20 +168,20 @@
 				//console.log(file);
 			},
 			handleRemove(file) {
-				console.log("移除");
+				//console.log("移除方法");
 				//删除图片
 				//从 this.form.pics移除当前删除掉的图片
 				//先获取该图片的索引
 				//findIndex( (item)=>{0}）遍历把符合条件的元素的索引进行返回
 				//[{pic:图片路径},{pic:图片路径2}]
-				console.log('删除图片前，图片的临时路径');
-				console.log(this.form.pics);
+				//console.log('删除图片前，图片的临时路径');
+				//console.log(this.form.pics);
 				let Index =this.form.pics.findIndex((item)=>{
 					return item.pic === file.response.data.tmp_path
 				});
 				this.form.pics.splice(Index,1);
-				console.log('删除图片后，剩下图片的临时路径');
-				console.log(this.form.pics);
+				//console.log('删除图片后，剩下图片的临时路径');
+				//console.log(this.form.pics);
 
 			},
 			handlePreview(file) {
