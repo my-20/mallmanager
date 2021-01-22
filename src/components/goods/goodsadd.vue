@@ -18,7 +18,7 @@
 			<el-step title="商品内容"></el-step>
 		</el-steps>
 		<!-- 外层需要表单来传数据发布发起请求 -->
-		<el-form label-position="top" label-width="80px" :model="form" style="height:300px;">
+		<el-form label-position="top" label-width="80px" :model="form" style="height:400px;">
 			<el-scrollbar style="height:100%">
 
 				<el-tabs @tab-click="tabChange()" v-model="active" tab-position="left">
@@ -26,18 +26,24 @@
 						<el-form-item label="商品名称">
 							<el-input v-model="form.goods_name"></el-input>
 						</el-form-item>
+
 						<el-form-item label="商品价格">
 							<el-input v-model="form.goods_price"></el-input>
 						</el-form-item>
+
 						<el-form-item label="商品重量">
 							<el-input v-model="form.goods_weight"></el-input>
 						</el-form-item>
+
 						<el-form-item label="商品数量">
 							<el-input v-model="form.goods_number"></el-input>
 						</el-form-item>
+
 						<!-- 级联选择器 -->
-						<el-cascader clearable expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultProp"
-						 @change="handleChange"></el-cascader>
+						<el-form-item label="商品分类">
+							<el-cascader clearable expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultProp"
+							 @change="handleChange"></el-cascader>
+						</el-form-item>
 					</el-tab-pane>
 
 
@@ -72,9 +78,9 @@
 					<el-tab-pane name="5" label="商品内容">
 						<el-form-item>
 							<!-- 表单元素 -->
-							<el-button type="primary">添加商品</el-button>
+							<el-button type="primary" @click="addGoods()">添加商品</el-button>
 							<!-- 富文本 -->
-							<quill-editor></quill-editor>
+							<quill-editor v-model="form.goods_introduce"></quill-editor>
 						</el-form-item>
 					</el-tab-pane>
 				</el-tabs>
@@ -105,8 +111,8 @@
 					goods_numDer: '',
 					goods_weight: '',
 					goods_introduce: '',
-					pics: '',
-					attrs: ''
+					pics: [],
+					attrs: []
 				},
 				// 级联选择器绑定的数据
 				options: [],
@@ -131,14 +137,41 @@
 			this.getGoodCate()
 		},
 		methods: {
+			//添加商品 ->发起请求
+			async addGoods() {
+				//发起请求前 处理this.from中的未处理数据
+				//goods_cat ->分类
+				this.form.goods_cat= this.selectedOptions.join(",");
+				
+				const res = await this.$http.post("goods", this.form);
+				
+			},
 			//图片上传时的相关方法
 			//file形参里面是当前操作的图片的相关信息(图片名/图片路径)
 			handleSuccess(file) {
 				//file.response.data.tmp_path图片临时上传的路径
-				console.log("成功");
-				console.log(file);
+				//console.log("成功");
+				//把临时上传的路径添加到this.from.pics中
+				this.form.pics.push({
+					pic: file.data.tmp_path
+				});
+				//console.log(file);
 			},
 			handleRemove(file) {
+				console.log("移除");
+				//删除图片
+				//从 this.form.pics移除当前删除掉的图片
+				//先获取该图片的索引
+				//findIndex( (item)=>{0}）遍历把符合条件的元素的索引进行返回
+				//[{pic:图片路径},{pic:图片路径2}]
+				console.log('删除图片前，图片的临时路径');
+				console.log(this.form.pics);
+				let Index =this.form.pics.findIndex((item)=>{
+					return item.pic === file.response.data.tmp_path
+				});
+				this.form.pics.splice(Index,1);
+				console.log('删除图片后，剩下图片的临时路径');
+				console.log(this.form.pics);
 
 			},
 			handlePreview(file) {
@@ -150,7 +183,7 @@
 				if (this.active === '2') {
 					if (this.selectedOptions.length !== 3) {
 						//提示
-						this.$message.error('请先选择商品的三级分类');
+						this.$message.error('请先选择基本信息中的商品分类');
 						return;
 					}
 					//获取数据
@@ -172,7 +205,7 @@
 				} else if (this.active === '3') {
 					if (this.selectedOptions.length !== 3) {
 						//提示
-						this.$message.error('请先选择商品的三级分类');
+						this.$message.error('请先选择基本信息中的商品分类');
 						return;
 					}
 					//获取数据
@@ -199,4 +232,7 @@
 </script>
 
 <style>
+	.ql-editor {
+		min-height: 200px;
+	}
 </style>
