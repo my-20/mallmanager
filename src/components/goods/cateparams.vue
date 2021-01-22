@@ -26,7 +26,7 @@
 									{{tag}}
 								</el-tag>
 								<el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
-								 @keyup.enter.native="handleInputConfirm(scope.row.attr_vals)" @blur="handleInputConfirm(scope.row.attr_vals)">
+								 @keyup.enter.native="handleInputConfirm(scope.row)" @blur="handleInputConfirm(scope.row)">
 								</el-input>
 								<el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
 							</template>
@@ -107,14 +107,14 @@
 						item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.trim().split(',')
 					});
 					//console.log(this.selectedOptions);
-					
+
 				} else {
 					if (this.selectedOptions.length !== 3) {
 						//提示
 						this.$message.error('请先选择商品分类中的三级分类');
 						//刷新视图
 						this.selectedOptions = [1, 3, 99999];
-						const res = await this.$http.get('categories/'+this.selectedOptions[2]+'/attributes?sel=many');
+						const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=many');
 						this.arrDyparams = res.data.data;
 						this.arrDyparams.forEach(item => {
 							//并不是所有的三级分类都有动态参数->""->[]->v-for报错
@@ -131,30 +131,40 @@
 				}
 			},
 			// tag方法
-			//tag 点击x的时候
+			//tag 点击x的时候 ->发送请求
 			async handleClose(row, tag) {
 				row.attr_vals.splice(row.attr_vals.indexOf(tag), 1);
-				var attr_name,attr_sel,attr_vals;
+				var attr_name, attr_sel, attr_vals;
 				let putData = {
-					 attr_name:row.attr_name,
-					 attr_sel:'many',
-					 attr_vals:row.attr_vals.join(',')
+					attr_name: row.attr_name,
+					attr_sel: 'many',
+					attr_vals: row.attr_vals.join(',')
 				}
-				const res = await this.$http.put("categories/"+this.selectedOptions[2]+"/attributes/"+row.attr_id,putData);
-				console.log(res);
+				//发送请求
+				const res = await this.$http.put("categories/" + this.selectedOptions[2] + "/attributes/" + row.attr_id, putData);
+				//console.log(res);
 			},
 			//tag 点击newTag+按钮
-			showInput() {
+			async showInput(row) {
 				this.inputVisible = true;
 				this.$nextTick(_ => {
 					this.$refs.saveTagInput.$refs.input.focus();
 				});
 			},
 			//tag 回车键 or失去焦点
-			handleInputConfirm(attr_vals) {
+			async handleInputConfirm(row) {
 				let inputValue = this.inputValue;
 				if (inputValue) {
-					attr_vals.push(inputValue);
+					row.attr_vals.push(inputValue);
+					//发送请求
+					var attr_name, attr_sel, attr_vals;
+					let putData = {
+						attr_name: row.attr_name,
+						attr_sel: 'many',
+						attr_vals: row.attr_vals.join(',')
+					}
+					const res = await this.$http.put("categories/" + this.selectedOptions[2] + "/attributes/" + row.attr_id, putData);
+					//console.log(res);
 				}
 				this.inputVisible = false;
 				this.inputValue = "";
