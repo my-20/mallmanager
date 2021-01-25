@@ -218,8 +218,8 @@
 						this.$message.error('请先选择基本信息中的商品分类');
 						return;
 					}
-					//获取数据
-					//id->分类 sel=only表示的是获取动态参数的数据
+					//获取静态数据
+					//id->分类 sel=only表示的是获取静态参数的数据
 					const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=only');
 					//console.log(res);
 					this.arrStaticparams = res.data.data;

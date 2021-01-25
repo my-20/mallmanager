@@ -41,7 +41,22 @@
 				</el-tab-pane>
 
 
-				<el-tab-pane label="静态参数" name="2">静态参数</el-tab-pane>
+				<el-tab-pane label="静态参数" name="2">
+					<el-button type="danger" plain>设置静态参数</el-button>
+
+					<el-table :data="arrStaticparams" style="width: 100%">
+						<el-table-column type="index" label="#">
+						</el-table-column>
+						<el-table-column label="属性名称" prop="attr_name">
+						</el-table-column>
+						<el-table-column label="属性值" prop="attr_vals">
+						</el-table-column>
+						<el-table-column label="操作" prop="desc">
+							<el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click='showEditUserDia(scope.row)'></el-button>
+							<el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserMsgBox(scope.row.id)"></el-button>
+						</el-table-column>
+					</el-table>
+				</el-tab-pane>
 			</el-tabs>
 
 		</el-form>
@@ -78,8 +93,16 @@
 			this.getGoodCate();
 		},
 		methods: {
-			handleClick() {
-
+			//点击tab切换时
+			async handleClick() {
+				if (this.active === '2') {
+					if (this.selectedOptions.length === 3) {
+						//获取静态参数数据
+						const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=only');
+						//console.log(res);
+						this.arrStaticparams = res.data.data;
+					}
+				}
 			},
 			//获取三级分类的信息
 			async getGoodCate() {
