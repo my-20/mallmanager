@@ -66,7 +66,9 @@
 </template>
 
 <script>
+	
 	export default {
+		
 		data() {
 			return {
 				active: '',
@@ -97,10 +99,7 @@
 			async handleClick() {
 				if (this.active === '2') {
 					if (this.selectedOptions.length === 3) {
-						//获取静态参数数据
-						const res = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=only');
-						//console.log(res);
-						this.arrStaticparams = res.data.data;
+						
 					}
 				}
 			},
@@ -130,6 +129,10 @@
 						item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.trim().split(',')
 					});
 					//console.log(this.selectedOptions);
+					//获取静态参数数据
+					const res1 = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=only');
+					//console.log(res);
+					this.arrStaticparams = res1.data.data;
 
 				} else {
 					if (this.selectedOptions.length !== 3) {
@@ -149,6 +152,8 @@
 
 						});
 						//console.log(this.selectedOptions);
+						const res1 = await this.$http.get('categories/' + this.selectedOptions[2] + '/attributes?sel=only');
+						this.arrStaticparams = res1.data.data;
 						return;
 					}
 				}
