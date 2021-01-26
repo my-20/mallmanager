@@ -41,7 +41,7 @@
 
 						<!-- 级联选择器 -->
 						<el-form-item label="商品分类">
-							<el-cascader clearable expand-trigger="hover" :options="options" v-model=" selectedOptions" :props="defaultProp"
+							<el-cascader clearable expand-trigger="hover" :options="options" v-model="selectedOptions" :props="defaultProp"
 							 @change="handleChange"></el-cascader>
 						</el-form-item>
 					</el-tab-pane>

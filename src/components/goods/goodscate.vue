@@ -21,11 +21,15 @@
 				</el-form-item>
 				<!-- 级联选择器(表单元素) -->
 				<el-form-item label="分类" :label-width="formLabelWidth">
-					{{selectedOptions}}
-					<el-cascader expand-trigger="hover" change-on-select clearable :options="caslist" v-model="selectedOptions" :props="defaultProp"></el-cascader>
+					<el-cascader 
+					expand-trigger="hover" 
+					clearable 
+					:options="caslist" 
+					v-model="selectedOptions" 
+					:props="defaultProp">
+					</el-cascader>
 				</el-form-item>
 			</el-form>
-
 			<div slot='footer' class="dialog-footer">
 				<el-button @click="dialogFormVisibleAdd = false">取消</el-button>
 				<el-button type="primary" @click='addCate()'>确定</el-button>
@@ -102,9 +106,9 @@
 				// 级联选择器选择的数据
 				selectedOptions: [],
 				defaultProp: {
+					label: 'cat_name',
 					value: 'cat_id',
-					lable: 'cat_name',
-					chaildren: 'children'
+					children: 'children'
 				}
 			};
 		},
@@ -113,15 +117,17 @@
 
 		},
 		methods: {
-			handleNodeClick(data) {
-				console.log(data);
-			},
+		
 			//添加分类 - 发送请求
 			async addCate() {
 
 			},
 			//添加分类 -显示对话框
 			async addGoodsCate() {
+				//获取二级分类
+				const res = await this.$http.get(`categories?type=2`);
+				this.caslist=res.data.data;
+				console.log(this.caslist);
 				this.dialogFormVisibleAdd = true;
 			},
 			//获取所有分类
@@ -131,7 +137,7 @@
 				);
 				// console.log(res);
 				this.list = res.data.data.result;
-				console.log(this.list);
+				//console.log(this.list);
 				this.total = res.data.data.total;
 				// console.log(this.total);
 			},
