@@ -21,12 +21,7 @@
 				</el-form-item>
 				<!-- 级联选择器(表单元素) -->
 				<el-form-item label="分类" :label-width="formLabelWidth">
-					<el-cascader 
-					expand-trigger="hover" 
-					clearable 
-					:options="caslist" 
-					v-model="selectedOptions" 
-					:props="defaultProp">
+					<el-cascader expand-trigger="hover" clearable :options="caslist" v-model="selectedOptions" :props="defaultProp">
 					</el-cascader>
 				</el-form-item>
 			</el-form>
@@ -43,15 +38,9 @@
 			leveLKey ->当前节点的级别
 			childKey ->子节点 
 			-->
-			<el-tree-grid 
-			prop="cat_name" 
-			label="分类名称" 
-			treeKey="cat_id" 
-			parentKey="cat_pid"
-			levelKey="cat_level" 
-			childKey="children">
+			<el-tree-grid prop="cat_name" label="分类名称" treeKey="cat_id" parentKey="cat_pid" levelKey="cat_level" childKey="children">
 			</el-tree-grid>
-			
+
 			<el-table-column prop="date" label="级别" width="180">
 				<template slot-scope='scop'>
 					<span v-if="scop.row.cat_level===0">一级</span>
@@ -117,16 +106,46 @@
 
 		},
 		methods: {
-		
+
 			//添加分类 - 发送请求
 			async addCate() {
-
+				// cat_pid分类父ID不能为空 
+				// cat_name分类名称不能为空
+				// cat_Level分类层级不能为空
+				//三种情况
+				// 1．一级分类 seLectedOptions.Length==0 cat_pid=0 cat_level=0
+				//2．二级分类 seLectedOptions.Length==1 cat_pid=seLectedOptions[0] cat_level=1
+				//3．三级分类 seLectedOptions.Length==2 cat_pid=seLectedOptions[1] cat_level=2
+				if (this.selectedOptions.length === 0) {
+					this.form.cat_pid = 0;
+					this.form.cat_level = 0;
+				} else if (this.selectedOptions.length === 1) {
+					this.form.cat_pid = this.selectedOptions[0];
+					this.form.cat_level = 1;
+				} else if (this.selectedOptions.length === 2) {
+					this.form.cat_pid = this.selectedOptions[1];
+					this.form.cat_level = 2;
+				}
+				const res = await this.$http.post('categories', this.form);
+				console.log(res);
+				//更新视图
+				this.getGoodsCate();
+				//关闭对话框
+				this.dialogFormVisibleAdd = false;
+				//清空form表单
+				this.form={};
+				//提示
+				if(res.data.meta.status===201){
+					this.$message.success("添加成功");
+				}else{
+					this.$message.error("添加失败");
+				}
 			},
 			//添加分类 -显示对话框
 			async addGoodsCate() {
 				//获取二级分类
 				const res = await this.$http.get(`categories?type=2`);
-				this.caslist=res.data.data;
+				this.caslist = res.data.data;
 				console.log(this.caslist);
 				this.dialogFormVisibleAdd = true;
 			},
@@ -158,8 +177,8 @@
 </script>
 
 <style scoped>
-/* 取消 el-tree-grid的默认图标*/
-.el-icon-folder:before{
-	content:'';
-}
+	/* 取消 el-tree-grid的默认图标*/
+	.el-icon-folder:before {
+		content: '';
+	}
 </style>
