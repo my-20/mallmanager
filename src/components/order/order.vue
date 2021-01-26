@@ -39,6 +39,8 @@
 </template>
 
 <script>
+	import catlist from '../../assets/city_data2017_element.js'
+	
 	export default{
 		data(){
 			return{
@@ -62,6 +64,7 @@
 				this.list=res.data.data.goods;
 			},
 			showEditdia(row){
+				this.catilist=catlist;
 				this.dialogFormVisible=true;
 			}
 		}
