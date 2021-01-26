@@ -39,7 +39,15 @@
 			leveLKey ->当前节点的级别
 			childKey ->子节点 
 			-->
-			<el-tree-grid prop="cat_name" label="分类名称"></el-tree-grid>
+			<el-tree-grid 
+			prop="cat_name" 
+			label="分类名称" 
+			treeKey="cat_id" 
+			parentKey="cat_pid"
+			levelKey="cat_level" 
+			childKey="children">
+			</el-tree-grid>
+			
 			<el-table-column prop="date" label="级别" width="180">
 				<template slot-scope='scop'>
 					<span v-if="scop.row.cat_level===0">一级</span>
@@ -102,8 +110,12 @@
 		},
 		created() {
 			this.getGoodsCate();
+
 		},
 		methods: {
+			handleNodeClick(data) {
+				console.log(data);
+			},
 			//添加分类 - 发送请求
 			async addCate() {
 
@@ -119,10 +131,9 @@
 				);
 				// console.log(res);
 				this.list = res.data.data.result;
-				// console.log(this.list);
+				console.log(this.list);
 				this.total = res.data.data.total;
 				// console.log(this.total);
-
 			},
 			//分页的相关方法
 			handleSizeChange(val) {
@@ -140,5 +151,9 @@
 	}
 </script>
 
-<style>
+<style scoped>
+/* 取消 el-tree-grid的默认图标*/
+.el-icon-folder:before{
+	content:'';
+}
 </style>
