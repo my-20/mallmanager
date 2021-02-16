@@ -25,20 +25,44 @@ export default {
     },
     methods:{
         //登录请求
-        handleLogin(){
-            this.$http.post('login',this.formdata).then(res => {
+        // handleLogin(){
+        //     this.$http.post('login',this.formdata).then(res => {
+        //         const{
+        //             data,
+        //             meta:{msg,status}
+        //         } = res.data
+
+        //         if(status === 200){
+        //             //跳转home页面
+        //             this.$router.push({name:'home'})
+        //             //提示成功
+        //             this.$message.success(msg)
+        //         }else{
+        //             //提示失败
+        //             this.$message.warning(msg)
+        //         }
+        //     })
+        // }
+
+        //使用ES7 async+await
+        //希望让异步操作代码，看起来像同步代码
+        async handleLogin(){
+            const res = await this.$http.post('login',this.formdata)
                 const{
                     data,
                     meta:{msg,status}
                 } = res.data
 
                 if(status === 200){
-                    // this.$router.push({name:'home'})
+                    //跳转home页面
+                    this.$router.push({name:'home'})
+                    //提示成功
                     this.$message.success(msg)
                 }else{
+                    //提示失败
                     this.$message.warning(msg)
                 }
-            })
+            
         }
     }
 }
