@@ -48,12 +48,15 @@ export default {
         //希望让异步操作代码，看起来像同步代码
         async handleLogin() {
             const res = await this.$http.post('login', this.formdata)
+            console.log(res)
             const {
                 data,
                 meta: { msg, status }
             } = res.data
 
             if (status === 200) {
+                //保存token值
+                localStorage.setItem('token',data.token)
                 //跳转home页面
                 this.$router.push({ name: 'home' })
                 //提示成功
