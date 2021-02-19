@@ -19,21 +19,38 @@
     </el-row>
 
     <!-- 表格 -->
-    <el-table :data="tableData" style="width: 100%">
+    <el-table :data="userlist" style="width: 100%">
         <el-table-column type="index" label="序号" width="60">
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="180">
+        <el-table-column prop="username" label="姓名" width="180">
         </el-table-column>
-        <el-table-column prop="address" label="邮箱">
+        <el-table-column prop="email" label="邮箱">
         </el-table-column>
-        <el-table-column prop="address" label="电话">
+        <el-table-column prop="mobile" label="电话">
         </el-table-column>
-        <el-table-column prop="address" label="创建时间">
+        <el-table-column prop="create_time" label="创建时间">
+            <!-- 如果单元格内显示的内容不是字符串（文本）需要添加template -->
+            <!-- 不同组件内的数据时不可以共享的 -->
+            <template slot-scope="scope">
+                {{scope.row.create_time | fmtdate}}
+            </template>
         </el-table-column>
-        <el-table-column prop="address" label="用户状态">
+        <el-table-column label="用户状态">
+            <template slot-scope="scope">
+                <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+                </el-switch>
+            </template>
         </el-table-column>
+
         <el-table-column prop="address" label="操作">
+            <template slot-scope="scope">
+                <el-button size="small" plain type="primary" icon="el-icon-edit" circle></el-button>
+                <el-button size="small" plain type="danger" icon="el-icon-delete" circle></el-button>
+                <el-button size="small" plain type="success" icon="el-icon-check" circle></el-button>
+                
+            </template>
         </el-table-column>
+
     </el-table>
 </el-card>
 </template>
@@ -45,23 +62,13 @@ export default {
             query: '',
             pagenum: 1,
             pagesize: 2,
-            tableData: [{
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1517 弄'
-            }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-            }, {
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1516 弄'
-            }]
+            //表格绑定的数据
+            userlist: [],
+            // 分页相关数据
+            total: -1,
+            pagenum: 1,
+            pagesize: 2
+
         }
     },
     created() {
@@ -78,8 +85,19 @@ export default {
             const AUTH_TOKEN = localStorage.getItem('token')
             this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
 
-            const res = this.$http.get(`users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`)
+            const res = await this.$http.get(`users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`)
             console.log(res)
+            const { meta: { status, msg }, data: { users, total } } = res.data
+            if (status === 200) {
+                // 给表格数据赋值
+                this.userlist = users
+                // 给total赋值
+                this.total = total
+                // 提示
+                this.$message.success(msg)
+            } else {
+                this.$message.warning(msg)
+            }
         }
     }
 }
