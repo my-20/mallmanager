@@ -2,12 +2,7 @@
 	<el-container class='container'>
 		<el-header class='header'>
 			<el-row>
-				<el-col :span="4">
-					<div class="grid-content bg-purple">
-						<img src="../../assets/1111.jpg" alt="图片无法显示QAQ" />
-					</div>
-				</el-col>
-				<el-col :span="18" class="middle">
+				<el-col :span="22" class="middle">
 					<h3 class="biaoti">后台管理系统</h3>
 				</el-col>
 				<el-col :span="2">
